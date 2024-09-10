@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Country;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -19,20 +20,34 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/login', function(){
-    return 'P';
-})->name('login');
-Route::get('/register', [AuthController::class, 'register']);
-Route::post('/register', [AuthController::class, 'registerproses'])->name('register');
-Route::get('/email/verify', function(){
-    return view('auth.verify-email');
-})->middleware('auth')->name('verification.notice');
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->fulfill();
+// //Email Verification // //
+// Route::get('/login', function(){
+//     return 'P';
+// })->name('login');
+// Route::get('/register', [AuthController::class, 'register']);
+// Route::post('/register', [AuthController::class, 'registerproses'])->name('register');
+// Route::get('/email/verify', function(){
+//     return view('auth.verify-email');
+// })->middleware('auth')->name('verification.notice');
+// Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+//     $request->fulfill();
  
-    return redirect('/profile');
-})->middleware(['auth', 'signed'])->name('verification.verify');
+//     return redirect('/profile');
+// })->middleware(['auth', 'signed'])->name('verification.verify');
 
-Route::get('/profile', function () {
-    return 'profile';
-})->middleware(['auth', 'verified']);
+// Route::get('/profile', function () {
+//     return 'profile';
+// })->middleware(['auth', 'verified']);
+
+
+// Upsert
+Route::get('/countries', function(){
+    $country = Country::updateOrCreate(
+        ['name' => 'singapura'], //Kolom untuk pengecekan data
+        [
+            'name' => 'singapura', //Data yang akan diupdate
+            'capital_city' => 'singapura',
+            'currency' => 'dollar s'
+        ]
+    );
+});
