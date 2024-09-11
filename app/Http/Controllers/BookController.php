@@ -7,10 +7,11 @@ use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
-    public function index(Request $request){
-        if($request->keyword){
+    public function index(Request $request)
+    {
+        if ($request->keyword) {
             $books = Book::search($request->keyword)->get();
-        }else{
+        } else {
             $books = Book::all();
         }
 
