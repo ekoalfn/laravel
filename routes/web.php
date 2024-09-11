@@ -1,16 +1,17 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\BookController;
+use App\Models\User;
 use App\Models\Country;
 use App\Models\Student;
-use Illuminate\Auth\Events\PasswordReset;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Str;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BookController;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,9 +29,9 @@ Route::get('/', function () {
 });
 
 // //Email Verification // //
-Route::get('/login', function () {
-    return 'P';
-})->name('login');
+// Route::get('/login', function () {
+//     return 'P';
+// })->name('login');
 // Route::get('/register', [AuthController::class, 'register']);
 // Route::post('/register', [AuthController::class, 'registerproses'])->name('register');
 // Route::get('/email/verify', function(){
@@ -73,51 +74,85 @@ Route::get('/login', function () {
 //     $student->extra()->detach([3,4]);
 // });
 
-// // // Laravel scout // // //
-Route::get('/book', [BookController::class, 'index'])->name('book');
+// // // // Laravel scout // // //
+// Route::get('/book', [BookController::class, 'index'])->name('book');
 
-// // // Reset Password // // //
-Route::get('/forgot-password', function () {
-    return view('auth.forgot-password');
-})->middleware('guest')->name('password.request');
+// // // // Reset Password // // //
+// Route::get('/forgot-password', function () {
+//     return view('auth.forgot-password');
+// })->middleware('guest')->name('password.request');
 
-Route::post('/forgot-password', function (Request $request) {
-    $request->validate(['email' => 'required|email']);
+// Route::post('/forgot-password', function (Request $request) {
+//     $request->validate(['email' => 'required|email']);
 
-    $status = Password::sendResetLink(
-        $request->only('email')
-    );
+//     $status = Password::sendResetLink(
+//         $request->only('email')
+//     );
 
-    return $status === Password::RESET_LINK_SENT
-                ? back()->with(['status' => __($status)])
-                : back()->withErrors(['email' => __($status)]);
-})->middleware('guest')->name('password.email');
+//     return $status === Password::RESET_LINK_SENT
+//                 ? back()->with(['status' => __($status)])
+//                 : back()->withErrors(['email' => __($status)]);
+// })->middleware('guest')->name('password.email');
 
-Route::get('/reset-password/{token}', function ($token) {
-    return view('auth.reset-password', ['token' => $token]);
-})->middleware('guest')->name('password.reset');
+// Route::get('/reset-password/{token}', function ($token) {
+//     return view('auth.reset-password', ['token' => $token]);
+// })->middleware('guest')->name('password.reset');
 
-Route::post('/reset-password', function (Request $request) {
-    $request->validate([
-        'token' => 'required',
-        'email' => 'required|email',
-        'password' => 'required|min:8|confirmed',
-    ]);
+// Route::post('/reset-password', function (Request $request) {
+//     $request->validate([
+//         'token' => 'required',
+//         'email' => 'required|email',
+//         'password' => 'required|min:8|confirmed',
+//     ]);
 
-    $status = Password::reset(
-        $request->only('email', 'password', 'password_confirmation', 'token'),
-        function ($user, $password) {
-            $user->forceFill([
-                'password' => Hash::make($password),
-            ])->setRememberToken(Str::random(60));
+//     $status = Password::reset(
+//         $request->only('email', 'password', 'password_confirmation', 'token'),
+//         function ($user, $password) {
+//             $user->forceFill([
+//                 'password' => Hash::make($password),
+//             ])->setRememberToken(Str::random(60));
 
-            $user->save();
+//             $user->save();
 
-            event(new PasswordReset($user));
-        }
-    );
+//             event(new PasswordReset($user));
+//         }
+//     );
 
-    return $status === Password::PASSWORD_RESET
-                ? redirect()->route('login')->with('status', __($status))
-                : back()->withErrors(['email' => [__($status)]]);
-})->middleware('guest')->name('password.update');
+//     return $status === Password::PASSWORD_RESET
+//                 ? redirect()->route('login')->with('status', __($status))
+//                 : back()->withErrors(['email' => [__($status)]]);
+// })->middleware('guest')->name('password.update');
+
+
+// // // Banhammer // // //
+Route::get('/login', function () {
+    $user = User::findOrFail(2);
+    Auth::login($user);
+    return redirect('/home');
+})->name('login');
+
+Route::get('/logout', function (Request $request) {
+    Auth::logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+    return redirect('/');
+})->middleware(['auth']);
+
+Route::get('/home', function () {
+    return  'halo email kamu '. Auth::user()->email;
+})->middleware(['auth', 'auth.banned']);
+
+Route::get('/ban-user', function () {
+    $user = User::findOrFail(2);
+    $user->banuntil('3 days '); //Dengan jangka waktu
+    $user->ban(); //Tanpa jangka waktu
+});
+
+Route::get('/unban', function () {
+    $user = User::findOrFail(2);
+    $user->unban();
+});
+
+Route::get('/ban-list', function () {
+    $list = User::banned()->get();
+});

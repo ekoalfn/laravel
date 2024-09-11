@@ -2,16 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Auth\Passwords\CanResetPassword;
+use Laravel\Sanctum\HasApiTokens;
+use Mchev\Banhammer\Traits\Bannable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use CanResetPassword, HasApiTokens, HasFactory, Notifiable;
+    use CanResetPassword, HasApiTokens, HasFactory, Notifiable, Bannable;
 
     /**
      * The attributes that are mass assignable.
