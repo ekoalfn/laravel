@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Country;
+use App\Models\Student;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -41,13 +42,28 @@ Route::get('/', function () {
 
 
 // Upsert
-Route::get('/countries', function(){
-    $country = Country::updateOrCreate(
-        ['name' => 'singapura'], //Kolom untuk pengecekan data
-        [
-            'name' => 'singapura', //Data yang akan diupdate
-            'capital_city' => 'singapura',
-            'currency' => 'dollar s'
-        ]
-    );
+// Route::get('/countries', function(){
+//     $country = Country::updateOrCreate(
+//         ['name' => 'singapura'], //Kolom untuk pengecekan data
+//         [
+//             'name' => 'singapura', //Data yang akan diupdate
+//             'capital_city' => 'singapura',
+//             'currency' => 'dollar s'
+//         ]
+//     );
+// });
+
+
+
+// // Attach Detach // //
+Route::get('/attach', function(){
+    $student = Student::find(1);
+
+    $student->extra()->attach([3,4]);
+});
+
+Route::get('/detach', function(){
+    $student = Student::find(1);
+
+    $student->extra()->detach([3,4]);
 });
