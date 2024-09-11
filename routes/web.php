@@ -59,7 +59,9 @@ Route::get('/', function () {
 Route::get('/attach', function(){
     $student = Student::find(1);
 
-    $student->extra()->attach([3,4]);
+    // $student->extra()->attach(1);
+
+    $student->extra()->sync(2);  // Untuk mengatasi duplikasi data dari penggunaan metode attach
 });
 
 Route::get('/detach', function(){
