@@ -4,6 +4,7 @@ use App\Models\Country;
 use App\Models\Student;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BookController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 /*
@@ -56,16 +57,20 @@ Route::get('/', function () {
 
 
 // // Attach Detach // //
-Route::get('/attach', function(){
-    $student = Student::find(1);
+// Route::get('/attach', function(){
+//     $student = Student::find(1);
 
-    // $student->extra()->attach(1);
+//     // $student->extra()->attach(1);
 
-    $student->extra()->sync(2);  // Untuk mengatasi duplikasi data dari penggunaan metode attach
-});
+//     $student->extra()->sync(2);  // Untuk mengatasi duplikasi data dari penggunaan metode attach
+// });
 
-Route::get('/detach', function(){
-    $student = Student::find(1);
+// Route::get('/detach', function(){
+//     $student = Student::find(1);
 
-    $student->extra()->detach([3,4]);
-});
+//     $student->extra()->detach([3,4]);
+// });
+
+
+// // // Laravel scout // // //
+Route::get('/book', [BookController::class, 'index'])->name('book');
