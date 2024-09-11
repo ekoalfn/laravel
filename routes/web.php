@@ -74,7 +74,7 @@ Route::get('/login', function () {
 // });
 
 // // // Laravel scout // // //
-// Route::get('/book', [BookController::class, 'index'])->name('book');
+Route::get('/book', [BookController::class, 'index'])->name('book');
 
 // // // Reset Password // // //
 Route::get('/forgot-password', function () {

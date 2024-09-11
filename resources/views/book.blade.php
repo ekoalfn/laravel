@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <script src="{{ asset('vendor/smart-ads/js/smart-banner.min.js') }}"></script>
 </head>
 <body>
     <h2 style="text-align: center"> Book List</h2>
-
+    <x-smart-ad-component slug="Gacor"/>
     <div style="display: flex; justify-content: center; margin-bottom: 10px">
         <form action="" method="GET">
             <input type="text" name="keyword">
